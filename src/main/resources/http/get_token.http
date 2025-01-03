@@ -1,4 +1,4 @@
-POST http://localhost:8180/realms/kaservice/protocol/openid-connect/token
+POST http://localhost:8081/realms/kaservice/protocol/openid-connect/token
 Content-Type: application/x-www-form-urlencoded
 
-client_id=springsecurity&client_secret=VKdBx2zyWoopeBIMjo4DMID6y1uH9gm7&username=i.ivanov&password=password&grant_type=password
+client_id=kaservice_client&client_secret=KCzv6vHTwcQLdFH387A1oXTfEFm8vor8&username=u.userov@example.com&password=password&grant_type=password
