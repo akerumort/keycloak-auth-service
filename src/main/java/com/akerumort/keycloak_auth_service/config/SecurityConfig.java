@@ -27,7 +27,7 @@ public class SecurityConfig {
 
         return http
                 .authorizeHttpRequests(c -> c.requestMatchers("/error").permitAll()
-                        .requestMatchers("/admin.html").hasRole("ADMIN") // prefix "ROLE_" is default by SC
+                        .requestMatchers("/auth/admin").hasRole("ADMIN") // prefix "ROLE_" is default by SS
                         .anyRequest().authenticated())
                 .build();
     }
@@ -39,7 +39,7 @@ public class SecurityConfig {
         converter.setPrincipalClaimName("preferred_username");
         converter.setJwtGrantedAuthoritiesConverter(jwt -> {
             var authorities = jwtGrantedAuthoritiesConverter.convert(jwt);
-            var roles = jwt.getClaimAsStringList("spring_sec_roles");
+            var roles = jwt.getClaimAsStringList("kaservice_roles");
 
             return Stream.concat(authorities.stream(),
                             roles.stream()
@@ -57,7 +57,7 @@ public class SecurityConfig {
         var oidcUserService = new OidcUserService();
         return userRequest -> {
             var oidcUser = oidcUserService.loadUser(userRequest);
-            var roles = oidcUser.getClaimAsStringList("spring_sec_roles");
+            var roles = oidcUser.getClaimAsStringList("kaservice_roles");
             var authorities = Stream.concat(oidcUser.getAuthorities().stream(),
                             roles.stream()
                                     .filter(role -> role.startsWith("ROLE_"))
