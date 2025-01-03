@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloakdb
+      POSTGRES_USER: kuser
+      POSTGRES_PASSWORD: kpass
+    networks:
+      - keycloak-network
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.0
+    container_name: keycloakweb
+    ports:
+      - 8081:8080
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgres
+      DB_DATABASE: keycloakdb
+      DB_SCHEMA: public
+      DB_USER: kuser
+      DB_PASSWORD: kpass
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    networks:
+      - keycloak-network
+    depends_on:
+      - postgres
+    command: start-dev
+
+networks:
+  keycloak-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
