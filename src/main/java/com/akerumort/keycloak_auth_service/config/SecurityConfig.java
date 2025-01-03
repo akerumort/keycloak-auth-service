@@ -29,6 +29,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(c -> c.requestMatchers("/error").permitAll()
                         .requestMatchers("/auth/admin").hasRole("ADMIN") // prefix "ROLE_" is default by SS
                         .anyRequest().authenticated())
+                .logout(logout -> logout
+                        .logoutSuccessUrl("http://localhost:8081/realms/kaservice/protocol/openid-connect/logout")
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true))
                 .build();
     }
 
