@@ -60,18 +60,24 @@ client_id=kaservice_client&client_secret=yourClientSecretHere&username=your.user
 - **SpringDoc OpenAPI**: 2.2.0
 - **Docker**
 
-## 🐋 Installation without download & Settings (Keycloak)
-
+## 🐋 Installation & configuring
+**First, you need to install and configure Keycloak to work:**
 1. Build docker container with Keycloak from main directory:
    ```bash
-   docker-compose build
+   docker-compose up --build
    ```
 2. Open localhost on the port specified in docker-compose
 3. Create new realm
-4. Create user (and copy **your** client secret from Credentials)
-5. Create client with client authentication (+ set up your root and valid redirect URLs)
-6. Create new role and then add this role to user
-7. Create mapper for user realm role (Client scopes -> Mappers -> Add mapper by configuration -> User realm role -> Add your name -> click **Multivalued** -> Add Token Claim Name)
+4. Create new user
+   **Also, I use a permanent password without changing it, so by disabling the “Temporary” setting**
+5. Create client with client authentication (+ set up your root, home and valid redirect URLs)
+   **The name of my client is: kaservice_client (if another name is used, remember to change this in the application)**
+6. Turn on "User registration" param in (You can also use email as a login when logging in):
+   **Realm settings -> Login -> Turn on "Login with email" + "Turn on "Email as username"**
+7. Copy **your** client secret from Credentials for application.properties
+8. Create new realm role and then add this role to user by "Assign role" in Role mapping (I'm using ROLE_ADMIN role)
+9. Create mapper for user realm role
+    **Client scopes -> roles -> Mappers -> Add mapper by configuration -> User realm role -> Add your name ("user roles" for example)-> Turn on **Multivalued** -> Add Token Claim Name (I'm using name "kaservice_roles")**
 
 ## 🛡️ License
 This project is licensed under the MIT License. See the LICENSE file for more details.
