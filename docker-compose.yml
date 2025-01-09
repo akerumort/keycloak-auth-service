@@ -11,6 +11,7 @@ services:
       POSTGRES_PASSWORD: kpass
     networks:
       - keycloak-network
+
   keycloak:
     image: quay.io/keycloak/keycloak:24.0.0
     container_name: keycloakweb
@@ -33,10 +34,29 @@ services:
       - postgres
     command: start-dev
 
+  auth-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: auth-service
+    ports:
+      - 8080:8080
+    environment:
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://localhost:8081/realms/kaservice
+      SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI: http://localhost:8081/realms/kaservice
+      #SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8081/realms/kaservice
+      #SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI: http://keycloak:8081/realms/kaservice
+    networks:
+      - keycloak-network
+    depends_on:
+      - keycloak
+
 networks:
   keycloak-network:
     driver: bridge
 
 volumes:
   postgres_data:
+    driver: local
+  keycloak_data:
     driver: local
